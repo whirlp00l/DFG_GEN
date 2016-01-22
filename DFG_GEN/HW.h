@@ -1,13 +1,12 @@
 #pragma once
 #include "PU.h"
 #include <vector>
-#include "Scheduler.h"
 
 class HardwareResource {
 public:
 	int Width, Height;
 	std::vector<ProcessorUnit> resources;
-	HardwareResource::HardwareResource(int w, int h): Width(w), Height(h) {
+	HardwareResource(int w, int h): Width(w), Height(h) {
 		for (int i = 0; i < Height;i++) { // i for row
 			for (int j = 0; j < Width;j++) { // j for column
 				int N, W, S, E, L;
@@ -25,11 +24,5 @@ public:
 			}
 		}
 	};
-
-
-
-
-
-
-	HardwareResource::HardwareResource(): Width(0), Height(0), resources(0) {};
+	HardwareResource(): Width(0), Height(0), resources(0) {};
 };

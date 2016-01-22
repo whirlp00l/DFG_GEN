@@ -22,7 +22,7 @@ private:
 
 public:
 
-	InstructionLatency::InstructionLatency() {
+	InstructionLatency() {
 		store_latency = 1;	load_latency = 1;                 //all execute in 1 cycle
 		add_latency = 1;		mult_latency = 1;
 		div_latency = 1;		shift_latency = 1;
@@ -36,7 +36,7 @@ public:
 		colors[NUL] = 0x000000;
 	}
 
-	void InstructionLatency::configure(int st, int ld, int add, int mult, int div, int shift, int mov, int jmp, int cjmp, int nop) {
+	void configure(int st, int ld, int add, int mult, int div, int shift, int mov, int jmp, int cjmp, int nop) {
 		store_latency = st;		load_latency = ld;
 		add_latency = add;		mult_latency = mult;
 		div_latency = div;		shift_latency = shift;
@@ -44,7 +44,7 @@ public:
 		cjump_latency = cjmp;		nop_latency = nop;
 		return;
 	}
-	int InstructionLatency::get_latency_of(int inst_type) {
+	int get_latency_of(int inst_type) {
 		switch (inst_type) {
 		case STORE: return store_latency;
 		case LOAD:	return load_latency;
@@ -60,8 +60,8 @@ public:
 		return 0;
 	}
 
-	int InstructionLatency::get_color_of(int inst_type) { return colors[inst_type]; }
-	char *InstructionLatency::get_InstTypeName(int inst_type) {
+	int get_color_of(int inst_type) { return colors[inst_type]; }
+	char *get_InstTypeName(int inst_type) {
 		switch (inst_type) {
 		case STORE:		return "STORE";
 		case LOAD:		return "LOAD";
@@ -90,14 +90,14 @@ private:
 	std::vector<int> parents_distance, children_distance;
 
 public:
-	DFG_vertex::DFG_vertex(char *n, int inst_t, int id) {
+	DFG_vertex(char *n, int inst_t, int id) {
 		clear();
 		strcpy(name, n);
 		inst_type = inst_t;
 		ID = id;
 	}
-	DFG_vertex::DFG_vertex() { clear(); }
-	void DFG_vertex::clear() {
+	DFG_vertex() { clear(); }
+	void clear() {
 		strcpy(name, "");
 		inst_type = NUL;
 		parents.clear();
@@ -118,7 +118,7 @@ public:
 		return;
 	}
 
-	void DFG_vertex::add_children(int children_id, int distance) {
+	void add_children(int children_id, int distance) {
 		bool flag = true;
 		for (int i = 0; i<this->get_Num_of_Children(); i++) { if (this->get_ChildID(i) == children_id) flag = false; }
 
@@ -130,7 +130,7 @@ public:
 		}
 		return;
 	}
-	void DFG_vertex::add_parents(int parent_id, int distance) {
+	void add_parents(int parent_id, int distance) {
 		bool flag = true;
 		for (int i = 0; i<this->get_Num_of_Parents(); i++) { if (this->get_ParentID(i) == parent_id) flag = false; }
 		if (flag) {
@@ -141,8 +141,8 @@ public:
 		}
 		return;
 	}
-	char *DFG_vertex::get_Name() { return name; }
-	char *DFG_vertex::get_InstTypeName() {
+	char *get_Name() { return name; }
+	char *get_InstTypeName() {
 		switch (inst_type) {
 		case STORE:		return "STORE";
 		case LOAD:		return "LOAD";
@@ -157,30 +157,30 @@ public:
 		};
 		return "NULL";
 	}
-	int DFG_vertex::get_InstType() { return inst_type; }
-	int DFG_vertex::get_Num_of_Parents() { return num_of_parents; }
-	int DFG_vertex::get_Num_of_Children() { return num_of_children; }
-	int DFG_vertex::get_Num_of_rec_Parents() { return num_of_rec_parents; }
-	int DFG_vertex::get_Num_of_rec_Children() { return num_of_rec_children; }
-	int DFG_vertex::get_ParentID(int i) { return parents[i]; }
-	int DFG_vertex::get_ChildID(int i) { return children[i]; }
-	int DFG_vertex::get_Child_distance(int i) { return children_distance[i]; }
-	int DFG_vertex::get_Parent_distance(int i) { return parents_distance[i]; }
-	int DFG_vertex::get_ID() { return ID; }
-	int DFG_vertex::get_ASAP() { return ASAP; }
-	int DFG_vertex::get_ALAP() { return ALAP; }
-	int DFG_vertex::get_MOB() { return MOB; }
-	int DFG_vertex::get_DEPTH() { return DEPTH; }
-	int DFG_vertex::get_HEIGHT() { return HEIGHT; }
+	int get_InstType() { return inst_type; }
+	int get_Num_of_Parents() { return num_of_parents; }
+	int get_Num_of_Children() { return num_of_children; }
+	int get_Num_of_rec_Parents() { return num_of_rec_parents; }
+	int get_Num_of_rec_Children() { return num_of_rec_children; }
+	int get_ParentID(int i) { return parents[i]; }
+	int get_ChildID(int i) { return children[i]; }
+	int get_Child_distance(int i) { return children_distance[i]; }
+	int get_Parent_distance(int i) { return parents_distance[i]; }
+	int get_ID() { return ID; }
+	int get_ASAP() { return ASAP; }
+	int get_ALAP() { return ALAP; }
+	int get_MOB() { return MOB; }
+	int get_DEPTH() { return DEPTH; }
+	int get_HEIGHT() { return HEIGHT; }
 
-	int DFG_vertex::get_wd_ALAP() { return wd_ALAP; }
+	int get_wd_ALAP() { return wd_ALAP; }
 
-	void DFG_vertex::set_ASAP(int s) { ASAP = s; }
-	void DFG_vertex::set_ALAP(int s) { ALAP = s; }
-	void DFG_vertex::set_MOB(int s) { MOB = s; }
-	void DFG_vertex::set_DEPTH(int s) { DEPTH = s; }
-	void DFG_vertex::set_HEIGHT(int s) { HEIGHT = s; }
-	void DFG_vertex::set_wd_ALAP(int s) { wd_ALAP = s; }
+	void set_ASAP(int s) { ASAP = s; }
+	void set_ALAP(int s) { ALAP = s; }
+	void set_MOB(int s) { MOB = s; }
+	void set_DEPTH(int s) { DEPTH = s; }
+	void set_HEIGHT(int s) { HEIGHT = s; }
+	void set_wd_ALAP(int s) { wd_ALAP = s; }
 };
 
 class DataFlowGraph {
@@ -189,8 +189,8 @@ public:
 	std::map <int, DFG_vertex> Vertices;
 	InstructionLatency	InstructionModel;
 
-	DataFlowGraph::DataFlowGraph() { Vertices.clear(); }
-	void DataFlowGraph::add_vertex(int id, char *name, int inst_type) {
+	DataFlowGraph() { Vertices.clear(); }
+	void add_vertex(int id, char *name, int inst_type) {
 		DFG_vertex temp(name, inst_type, id);
 		if (search_vertex(id) == NULL) Vertices.insert(pair<int, DFG_vertex>(id, temp));
 		else {
@@ -200,14 +200,14 @@ public:
 		return;
 	}
 
-	DFG_vertex* DataFlowGraph::search_vertex(int id) {
+	DFG_vertex* search_vertex(int id) {
 		map<int, DFG_vertex>::iterator p;
 		p = Vertices.find(id);
 		if (p != Vertices.end()) return &(p->second);
 		else return NULL;
 	}
 
-	void DataFlowGraph::draw_edge(int parent_id, int child_id, int distance) {
+	void draw_edge(int parent_id, int child_id, int distance) {
 		if (distance == 0) this->draw_edge(parent_id, child_id);
 		else {
 			DFG_vertex *p, *c;
@@ -220,7 +220,7 @@ public:
 		}
 		return;
 	}
-	void DataFlowGraph::draw_edge(int parent_id, int child_id) {
+	void draw_edge(int parent_id, int child_id) {
 		DFG_vertex *p, *c;
 		p = search_vertex(parent_id);
 		c = search_vertex(child_id);
@@ -231,8 +231,8 @@ public:
 		return;
 	}
 
-	int  DataFlowGraph::get_number_of_vertices() { return (int)Vertices.size(); }
-	int  DataFlowGraph::has_recurrence() {
+	int  get_number_of_vertices() { return (int)Vertices.size(); }
+	int  has_recurrence() {
 		map<int, DFG_vertex>::iterator p;
 		int num = 0;
 		for (p = Vertices.begin(); p != Vertices.end(); p++) {
@@ -240,18 +240,18 @@ public:
 		}
 		return num;
 	}
-	void DataFlowGraph::remove_vertex(int id) {
+	void remove_vertex(int id) {
 		std::map <int, DFG_vertex>::iterator p = Vertices.find(id);
 		Vertices.erase(id);
 		return;
 	}
-	void DataFlowGraph::print_DFG() {
+	void print_DFG() {
 		map<int, DFG_vertex>::iterator p;
 		DFG_vertex temp;
 		for (p = Vertices.begin(); p != Vertices.end(); p++) print_DFG(p->first);
 		return;
 	}
-	void DataFlowGraph::print_DFG(int ID) {
+	void print_DFG(int ID) {
 		map<int, DFG_vertex>::iterator p;
 		DFG_vertex temp;
 		DFG_vertex *temp_p;
@@ -277,7 +277,7 @@ public:
 		return;
 	}
 
-	void DataFlowGraph::OutputPNG(const char * filename) {
+	void OutputPNG(const char * filename) {
 		FILE *fp;
 		map<int, DFG_vertex>::iterator p;
 		DFG_vertex temp;
@@ -308,7 +308,7 @@ public:
 
 
 
-	void DataFlowGraph::OutputStatement(const char * filename) {
+	void OutputStatement(const char * filename) {
 		DFG_vertex *c;
 		FILE *fp;
 

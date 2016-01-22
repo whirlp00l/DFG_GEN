@@ -36,9 +36,9 @@ class outlabeldata {
 	int id;
 	char valname[32];
 public:
-	int outlabeldata::getid(void) { return id; }
-	char *outlabeldata::getname(void) { return valname; }
-	outlabeldata::outlabeldata(int idnum, char* label)
+	int getid(void) { return id; }
+	char *getname(void) { return valname; }
+	outlabeldata(int idnum, char* label)
 	{
 		strncpy(valname, label, 31);
 		valname[31] = '\0';
@@ -52,18 +52,18 @@ class unsolvedinputdata {
 	int line_lastwrite;
 	int resolved;
 public:
-	unsolvedinputdata::unsolvedinputdata(int lineno, char *label) {
+	unsolvedinputdata(int lineno, char *label) {
 		strncpy(valname, label, 31);
 		valname[31] = '\0';
 		line_firstread = lineno;
 		line_lastwrite = -1;
 		resolved = 0;
 	}
-	char *unsolvedinputdata::getname() { return valname; }
-	int unsolvedinputdata::isresolved() { return resolved; }
-	int unsolvedinputdata::getwritelineno() { return line_lastwrite; }
-	int unsolvedinputdata::getreadlineno() { return line_firstread; }
-	void unsolvedinputdata::putwriteinfo(int lineno) {
+	char *getname() { return valname; }
+	int isresolved() { return resolved; }
+	int getwritelineno() { return line_lastwrite; }
+	int getreadlineno() { return line_firstread; }
+	void putwriteinfo(int lineno) {
 		line_lastwrite = lineno;
 		resolved = 1;
 	}
@@ -74,7 +74,7 @@ class DFG_maker {
 private:
 	DataFlowGraph DFG0;
 
-	void DFG_maker::print_unsolvedinputlist(std::vector <unsolvedinputdata> &usilist) {
+	void print_unsolvedinputlist(std::vector <unsolvedinputdata> &usilist) {
 		std::vector <unsolvedinputdata>::iterator pusidat;
 		printf("print unsolved input variable list\n");
 		for (pusidat = usilist.begin(); pusidat != usilist.end(); pusidat++) {
@@ -83,7 +83,7 @@ private:
 		}
 	}
 
-	void DFG_maker::print_parseresult(int resultflag, int inst_no, char *inst_str, char *op0_str, char *op1_str, char *op2_str, char *op3_str, char *op4_str) {
+	void print_parseresult(int resultflag, int inst_no, char *inst_str, char *op0_str, char *op1_str, char *op2_str, char *op3_str, char *op4_str) {
 		printf("result_0x%X ", resultflag);
 		printf("f%d_%s ", inst_no, inst_str);
 		if (resultflag & FLAG_OUTPUT_ENABLE) {
@@ -105,7 +105,7 @@ private:
 	}
 
 
-	int  DFG_maker::handle_inputvar(DataFlowGraph &DFG, std::vector <outlabeldata> &olist, std::vector<unsolvedinputdata> &ilist, char *labelname, int lineno)
+	int  handle_inputvar(DataFlowGraph &DFG, std::vector <outlabeldata> &olist, std::vector<unsolvedinputdata> &ilist, char *labelname, int lineno)
 	{
 		int sublinecounter = 0;
 		int inputvar_solved = 0;
@@ -130,7 +130,7 @@ private:
 
 
 
-	int  DFG_maker::parseline(const char *instline, int *inst_number, char *inst_str, char *op0_str, char *op1_str, char *op2_str, char *op3_str, char *op4_str) {
+	int  parseline(const char *instline, int *inst_number, char *inst_str, char *op0_str, char *op1_str, char *op2_str, char *op3_str, char *op4_str) {
 		//parsable expression format
 		//%(outvar) (command) %(invar) %(invar)
 		//delimitter letter is \t (space)
@@ -292,7 +292,7 @@ private:
 	}
 
 
-	int  DFG_maker::getinsttype(int inst_num) {
+	int  getinsttype(int inst_num) {
 		switch (inst_num) {
 		case OP_NUM_STORE:
 			return STORE;
@@ -353,7 +353,7 @@ private:
 		}
 	}
 
-	int  DFG_maker::getinstnum(const char *inst_str) {
+	int  getinstnum(const char *inst_str) {
 		if (!strcmp("RET", inst_str)) { return OP_NUM_RET; }
 		if (!strcmp("BR", inst_str)) { return OP_NUM_BR; }
 		if (!strcmp("SWITCH", inst_str)) { return OP_NUM_SWITCH; }
@@ -391,8 +391,8 @@ private:
 		return 0;
 	}
 public:
-	DFG_maker::DFG_maker() {};
-	int  DFG_maker::analyze_ll(const char *filename) {
+	DFG_maker() {};
+	int  analyze_ll(const char *filename) {
 		std::vector <outlabeldata> oldatlist;
 		std::vector <outlabeldata>::iterator poldat;
 		std::vector <unsolvedinputdata> usilist;
@@ -572,6 +572,6 @@ public:
 		return 0;
 	}
 
-	DataFlowGraph DFG_maker::get_DFG() { return DFG0; }
+	DataFlowGraph get_DFG() { return DFG0; }
 };
 
