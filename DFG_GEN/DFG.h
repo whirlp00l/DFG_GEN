@@ -1,3 +1,4 @@
+#pragma once
 // This file describe a class that represent DFG.
 
 #include <vector>

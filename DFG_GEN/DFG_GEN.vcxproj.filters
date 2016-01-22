@@ -35,5 +35,11 @@
     <ClInclude Include="PU.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HW.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

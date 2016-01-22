@@ -1,45 +1,4 @@
 #pragma once
-// parsertest5.cpp : コンソール アプリケーションのエントリ ポイントを定義します。
-//
-//[Parsertest2.cpp]
-//Summary
-//	read stdin input stream
-//	parse stream
-//	recognise 1output 3input instruction
-//	recognise variable label (started with '%')
-//	Detect flow-dependency
-//	Make CFG-virtex for each instruction-word
-//	Make CFG-edge for each flow-dependency
-//
-//Bugfix History
-//	fixed bug in the status constants of parser operation
-//	#define PARSE_OP2_DONE		 3		
-//=>#define PARSE_OP2_DONE		 4
-
-//[Parsertest3.cpp]
-//Summary (20050520_1058)
-//	Parsertest2 operation
-//	detect memory-variable(pointer, array) dependency
-//		detect memory access of getelementptr, select, load, store instruction
-//	detect RAW, WAR, WAW hazard
-//	Make CFG-edge for each memory hazard
-//	
-
-//[Parsertest4.cpp]
-//Summary
-//	Parsertest3 operation
-//	list up unsolved input variables
-//	detect loop-iteration dependecy from local variable
-//	recognise 1output 4input instruction
-
-//[Parsertest5.cpp]
-//Summary
-//	Parsertest4 operation
-//	modified string-parser operation
-//		recognize pointer-type
-//		added FLAG_INPUTx_PTR return-flag
-//	recognise non-pointer handling 'select' instruction 
-
 
 #include "operators.h"
 #include "DFG.h"
