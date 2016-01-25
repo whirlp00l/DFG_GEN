@@ -91,11 +91,11 @@ public:
 						fprintf(fp, " >= 0\n");
 
 						fprintf(fp, " - X(%d,%d,%d)", src_id, l, i); // operation binding to time l and processro i;
-						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i, 'N');
-						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i, 'W');
-						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i, 'S');
-						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i, 'E');
-						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i, 'L');
+						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, i, 'N');
+						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, i, 'W');
+						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, i, 'S');
+						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, i, 'E');
+						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, i, 'L');
 						fprintf(fp, " >= 0\n");
 				}
 			}
@@ -103,18 +103,117 @@ public:
 			//routing path constraint
 			for (int l = 1; l < l; l++) {
 				for (int i = 0; i < HW->num_of_processor; i++) {
-					for (int dir = 0; dir < 5; dir++) {
-						if (dir == 0 && HW->resources[i].CH.N>0) { //N
-							
-						
+					if (HW->resources[i].CH.N>0) { //N
+						int target_processor_id = i - HW->Width;
+						if (target_processor_id >= 0) {
+							fprintf(fp, " - D(%d,%d,%d)", edge_id, l, i); // operation binding to time l and processro i;
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'N');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'W');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'S');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'E');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'L');
+							fprintf(fp, " + X(%d,%d,%d)", dst_id, l + 1, target_processor_id);
+							fprintf(fp, " >= 0\n");
+						}
+					}
+					else if (HW->resources[i].CH.W>0) { //W
+						int target_processor_id = i - 1;
+						if (target_processor_id >= 0) {
+							fprintf(fp, " - D(%d,%d,%d,%c)", edge_id, l, i, 'W'); // operation binding to time l and processro i;
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'N');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'W');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'S');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'E');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'L');
+							fprintf(fp, " + X(%d,%d,%d)", dst_id, l + 1, target_processor_id);
+							fprintf(fp, " >= 0\n");
+						}
+					}
+					else if (HW->resources[i].CH.S>0) { //S
+						int target_processor_id = i + HW->Width;
+						if (target_processor_id <= HW->num_of_processor) {
+							fprintf(fp, " - D(%d,%d,%d,%c)", edge_id, l, i, 'S'); // operation binding to time l and processro i;
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'N');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'W');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'S');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'E');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'L');
+							fprintf(fp, " + X(%d,%d,%d)", dst_id, l + 1, target_processor_id);
+							fprintf(fp, " >= 0\n");
+						}
+					}
+					else if (HW->resources[i].CH.E>0) { //E
+						int target_processor_id = i + 1;
+						if (target_processor_id >= 0) {
+							fprintf(fp, " - D(%d,%d,%d,%c)", edge_id, l, i, 'E'); // operation binding to time l and processro i;
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'N');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'W');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'S');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'E');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'L');
+							fprintf(fp, " + X(%d,%d,%d)", dst_id, l + 1, target_processor_id);
+							fprintf(fp, " >= 0\n");
+						}
+					}
+					else if (HW->resources[i].CH.W>0) { //L
+						int target_processor_id = i;
+						if (target_processor_id >= 0) {
+							fprintf(fp, " - D(%d,%d,%d,%c)", edge_id, l, i, 'L'); // operation binding to time l and processro i;
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'N');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'W');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'S');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'E');
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'L');
+							fprintf(fp, " + X(%d,%d,%d)", dst_id, l + 1, target_processor_id);
+							fprintf(fp, " >= 0\n");
+						}
+					}	
+				}
+			}//end data path constraint
+
+			//wire constraint
+			for (int l = 1; l < L; l++) {
+				for (int i = 0; i < HW->num_of_processor; i++) {
+					if (HW->resources[i].CH.E>0) {
+						if (i + 1 < HW->num_of_processor) {
+							if (HW->resources[i + 1].CH.W > 0) {
+								fprintf(fp, "  D(%d,%d,%d,%c)", edge_id, l, i, 'E');
+								fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l, i + 1, 'W');
+								fprintf(fp, " = 1\n");
+							}
+						}
+					}
+					else if (HW->resources[i].CH.S>0) {
+						if (i + HW->Width < HW->num_of_processor) {
+							if (HW->resources[i + HW->Width].CH.W>0) {
+								fprintf(fp, "  D(%d,%d,%d,%c)", edge_id, l, i, 'S');
+								fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l, i + HW->Width, 'N');
+								fprintf(fp, " = 1\n");
+							}
 						}
 					}
 				}
 			}
 		}
+//////////TODO///////////////////////////////
+		//data exist constraint
+		for (int l = 1; l < L; l++) {
+			for (int i = 0; i < HW->num_of_processor; i++) {
+				bool firstline = true;
+				for (int edge = 0; edge < DFG->Edges.size(); edge++) {
+					if(firstline)
+						fprintf(fp, "  D(%d,%d,%d,%c)", edge_id, l, i, 'N');
+					else
+						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l, i, 'N');
+				}
+			}
+		}
 		
-		
-
+		fprintf(fp, "Bounds\n");
+		//all binary
+		for (int l = 1; l < L; l++) {
+			for(int )
+		}
 
 		fclose(fp);
 
