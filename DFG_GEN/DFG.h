@@ -79,6 +79,8 @@ public:
 
 };
 
+
+
 class DFG_vertex {
 private:
 	char name[64];
@@ -183,10 +185,22 @@ public:
 	void set_wd_ALAP(int s) { wd_ALAP = s; }
 };
 
+class DFG_edge {
+	int ID;
+	DFG_vertex *src;
+	DFG_vertex *dst;
+public:
+	DFG_edge(DFG_vertex *s, DFG_vertex *d, int id) :src(s), dst(d), ID(id) {};
+	int get_ID()const { return ID; }
+	DFG_vertex* get_Src() const { return src; }
+	DFG_vertex* get_Dst() const { return dst; }
+};
+
 class DataFlowGraph {
 private:
 public:
 	std::map <int, DFG_vertex> Vertices;
+	std::vector<DFG_edge> Edges;
 	InstructionLatency	InstructionModel;
 
 	DataFlowGraph() { Vertices.clear(); }
@@ -216,6 +230,7 @@ public:
 			if (p != NULL && c != NULL) {
 				p->add_children(child_id, distance);
 				c->add_parents(parent_id, distance);
+				Edges.push_back(DFG_edge(p, c, edge_id++));
 			}
 		}
 		return;
@@ -227,6 +242,7 @@ public:
 		if (p != NULL && c != NULL) {
 			p->add_children(child_id, 0);
 			c->add_parents(parent_id, 0);
+			Edges.push_back(DFG_edge(p, c, edge_id++));
 		}
 		return;
 	}
@@ -245,6 +261,7 @@ public:
 		Vertices.erase(id);
 		return;
 	}
+
 	void print_DFG() {
 		map<int, DFG_vertex>::iterator p;
 		DFG_vertex temp;

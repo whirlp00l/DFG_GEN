@@ -5,8 +5,10 @@
 class HardwareResource {
 public:
 	int Width, Height;
+	int num_of_processor;
 	std::vector<ProcessorUnit> resources;
 	HardwareResource(int w, int h): Width(w), Height(h) {
+		int id = 0;
 		for (int i = 0; i < Height;i++) { // i for row
 			for (int j = 0; j < Width;j++) { // j for column
 				int N, W, S, E, L;
@@ -20,9 +22,11 @@ public:
 				if (j == (Width - 1))
 					E = 0;
 				Channel cur_ch(N, W, S, E, L);
-				resources.push_back(ProcessorUnit(j, i, cur_ch));
+				resources.push_back(ProcessorUnit(j, i, cur_ch, id++));
 			}
 		}
+		num_of_processor = resources.size();
 	};
-	HardwareResource(): Width(0), Height(0), resources(0) {};
+	int getMaxWD() { return (Width + Height) * 2; };
+	HardwareResource(): Width(0), Height(0), resources(0), num_of_processor(0) {};
 };
