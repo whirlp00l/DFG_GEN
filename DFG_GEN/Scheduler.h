@@ -83,10 +83,14 @@ public:
 			for (int l = 1; l < L; l++) {
 				for (int i = 0; i < HW->num_of_processor; i++) {
 						fprintf(fp, " - X(%d,%d,%d)", dst_id, l, i); // operation binding to time l and processro i;
-						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i, 'N');
-						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i, 'W');
-						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i, 'S');
-						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i, 'E');
+						if(i-HW->Width >= 0)
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i - HW->Width, 'N');
+						if(i-1>=0)
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i - 1, 'W');
+						if(i+HW->Width < HW->num_of_processor)
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i + HW->Width, 'S');
+						if(i+1<HW->num_of_processor)
+							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i + 1, 'E');
 						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i, 'L');
 						fprintf(fp, " >= 0\n");
 
@@ -100,13 +104,13 @@ public:
 				}
 			}
 
-			//routing path constraint
+			//routing path constraint ///なぜ　こちらがないので
 			for (int l = 1; l < l; l++) {
 				for (int i = 0; i < HW->num_of_processor; i++) {
 					if (HW->resources[i].CH.N>0) { //N
 						int target_processor_id = i - HW->Width;
 						if (target_processor_id >= 0) {
-							fprintf(fp, " - D(%d,%d,%d)", edge_id, l, i); // operation binding to time l and processro i;
+							fprintf(fp, " - D(%d,%d,%d,%c)", edge_id, l, i, 'N'); // operation binding to time l and processro i;
 							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'N');
 							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'W');
 							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, target_processor_id, 'S');
@@ -116,7 +120,7 @@ public:
 							fprintf(fp, " >= 0\n");
 						}
 					}
-					else if (HW->resources[i].CH.W>0) { //W
+					if (HW->resources[i].CH.W>0) { //W
 						int target_processor_id = i - 1;
 						if (target_processor_id >= 0) {
 							fprintf(fp, " - D(%d,%d,%d,%c)", edge_id, l, i, 'W'); // operation binding to time l and processro i;
@@ -129,7 +133,7 @@ public:
 							fprintf(fp, " >= 0\n");
 						}
 					}
-					else if (HW->resources[i].CH.S>0) { //S
+					if (HW->resources[i].CH.S>0) { //S
 						int target_processor_id = i + HW->Width;
 						if (target_processor_id <= HW->num_of_processor) {
 							fprintf(fp, " - D(%d,%d,%d,%c)", edge_id, l, i, 'S'); // operation binding to time l and processro i;
@@ -142,7 +146,7 @@ public:
 							fprintf(fp, " >= 0\n");
 						}
 					}
-					else if (HW->resources[i].CH.E>0) { //E
+					if (HW->resources[i].CH.E>0) { //E
 						int target_processor_id = i + 1;
 						if (target_processor_id >= 0) {
 							fprintf(fp, " - D(%d,%d,%d,%c)", edge_id, l, i, 'E'); // operation binding to time l and processro i;
@@ -197,7 +201,7 @@ public:
 		}
 //////////TODO///////////////////////////////
 		//data exist constraint
-		fprintf(fp, "\\data exist constraint");
+		fprintf(fp, "\\\\data exist constraint\n");
 		for (int l = 1; l < L; l++) {
 			for (int i = 0; i < HW->num_of_processor; i++) {
 				bool firstline = true;
