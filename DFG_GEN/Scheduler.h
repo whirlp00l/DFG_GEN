@@ -179,7 +179,7 @@ public:
 							if (HW->resources[i + 1].CH.W > 0) {
 								fprintf(fp, "  D(%d,%d,%d,%c)", edge_id, l, i, 'E');
 								fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l, i + 1, 'W');
-								fprintf(fp, " = 1\n");
+								fprintf(fp, " <= 1\n");
 							}
 						}
 					}
@@ -188,7 +188,7 @@ public:
 							if (HW->resources[i + HW->Width].CH.W>0) {
 								fprintf(fp, "  D(%d,%d,%d,%c)", edge_id, l, i, 'S');
 								fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l, i + HW->Width, 'N');
-								fprintf(fp, " = 1\n");
+								fprintf(fp, " <= 1\n");
 							}
 						}
 					}
@@ -197,23 +197,110 @@ public:
 		}
 //////////TODO///////////////////////////////
 		//data exist constraint
+		fprintf(fp, "\\data exist constraint");
 		for (int l = 1; l < L; l++) {
 			for (int i = 0; i < HW->num_of_processor; i++) {
 				bool firstline = true;
-				for (int edge = 0; edge < DFG->Edges.size(); edge++) {
-					if(firstline)
+				for (int edge_id = 0; edge_id < DFG->Edges.size(); edge_id++) {
+					if (firstline) {
 						fprintf(fp, "  D(%d,%d,%d,%c)", edge_id, l, i, 'N');
+						firstline = false;
+					}
 					else
 						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l, i, 'N');
 				}
+				fprintf(fp, " <= 1\n");
+				firstline = true;
+				for (int edge_id = 0; edge_id < DFG->Edges.size(); edge_id++) {
+					if (firstline) {
+						fprintf(fp, "  D(%d,%d,%d,%c)", edge_id, l, i, 'W');
+						firstline = false;
+					}
+					else
+						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l, i, 'W');
+				}
+				fprintf(fp, " <= 1\n");
+				firstline = true;
+				for (int edge_id = 0; edge_id < DFG->Edges.size(); edge_id++) {
+					if (firstline) {
+						fprintf(fp, "  D(%d,%d,%d,%c)", edge_id, l, i, 'S');
+						firstline = false;
+					}
+					else
+						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l, i, 'S');
+				}
+				fprintf(fp, " <= 1\n");
+				firstline = true;
+				for (int edge_id = 0; edge_id < DFG->Edges.size(); edge_id++) {
+					if (firstline) {
+						fprintf(fp, "  D(%d,%d,%d,%c)", edge_id, l, i, 'E');
+						firstline = false;
+					}
+					else
+						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l, i, 'E');
+				}
+				fprintf(fp, " <= 1\n");
+				firstline = true;
+				for (int edge_id = 0; edge_id < DFG->Edges.size(); edge_id++) {
+					if (firstline) {
+						fprintf(fp, "  D(%d,%d,%d,%c)", edge_id, l, i, 'L');
+						firstline = false;
+					}
+					else
+						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l, i, 'L');
+				}
+				fprintf(fp, " <= 1\n");
 			}
 		}
 		
 		fprintf(fp, "Bounds\n");
-		//all binary
-		for (int l = 1; l < L; l++) {
-			for(int )
+		//set unavaliable wire/processr to 0
+		for (int l = 0; l < L+1; l++) {
+			for (int i = 0; i < HW->num_of_processor; i++) {
+				for (int edge_id = 0; edge_id < DFG->Edges.size(); edge_id++) {
+					if (HW->resources[i].CH.N == 0)
+						fprintf(fp, "  D(%d,%d,%d,%c) = 0\n", edge_id, l, i, 'N');
+					if (HW->resources[i].CH.W == 0)
+						fprintf(fp, "  D(%d,%d,%d,%c) = 0\n", edge_id, l, i, 'W');
+					if (HW->resources[i].CH.S == 0)
+						fprintf(fp, "  D(%d,%d,%d,%c) = 0\n", edge_id, l, i, 'S');
+					if (HW->resources[i].CH.E == 0)
+						fprintf(fp, "  D(%d,%d,%d,%c) = 0\n", edge_id, l, i, 'E');
+					if (HW->resources[i].CH.L == 0)
+						fprintf(fp, "  D(%d,%d,%d,%c) = 0\n", edge_id, l, i, 'L');
+				}
+			}
 		}
+		fprintf(fp, "Binary\n");
+		//all binary
+		for (auto p = DFG->Vertices.begin(); p != DFG->Vertices.end(); p++) {
+			int operation = p->second.get_ID();
+			bool firstline = true;
+			for (int l = 1; l < L; l++) {
+				for (int i = 0; i < HW->num_of_processor; i++) {
+					fprintf(fp, "X(%d,%d,%d)\n", operation, l, i); // operation binding to time l and processro i;
+				}
+			}
+		}
+
+		for (int l = 0; l < L+1; l++) {
+			for (int i = 0; i < HW->num_of_processor; i++) {
+				for (int edge_id = 0; edge_id < DFG->Edges.size(); edge_id++) {
+					if (HW->resources[i].CH.N > 0)
+						fprintf(fp, "  D(%d,%d,%d,%c)\n", edge_id, l, i, 'N');
+					if (HW->resources[i].CH.W > 0)
+						fprintf(fp, "  D(%d,%d,%d,%c)\n", edge_id, l, i, 'W');
+					if (HW->resources[i].CH.S > 0)
+						fprintf(fp, "  D(%d,%d,%d,%c)\n", edge_id, l, i, 'S');
+					if (HW->resources[i].CH.E > 0)
+						fprintf(fp, "  D(%d,%d,%d,%c)\n", edge_id, l, i, 'E');
+					if (HW->resources[i].CH.L > 0)
+						fprintf(fp, "  D(%d,%d,%d,%c)\n", edge_id, l, i, 'L');
+				}
+			}
+		}
+
+		fprintf(fp, "end\n");
 
 		fclose(fp);
 

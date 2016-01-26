@@ -202,8 +202,12 @@ public:
 	std::map <int, DFG_vertex> Vertices;
 	std::vector<DFG_edge> Edges;
 	InstructionLatency	InstructionModel;
+	int edge_id;
 
-	DataFlowGraph() { Vertices.clear(); }
+	DataFlowGraph() {
+		Vertices.clear();
+		edge_id = 0;
+	}
 	void add_vertex(int id, char *name, int inst_type) {
 		DFG_vertex temp(name, inst_type, id);
 		if (search_vertex(id) == NULL) Vertices.insert(pair<int, DFG_vertex>(id, temp));
