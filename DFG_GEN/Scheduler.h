@@ -22,6 +22,10 @@ public:
 		L += HW->getMaxWD();
 	}
 	Scheduler(DataFlowGraph* dfg, HardwareResource* hw) : DFG(dfg), HW(hw), MAX_WD(-1), L(-1) {};
+
+	void set_L(int l) {
+		L = l;
+	}
 	
 	void PrintLPFile() {
 		FILE *fp;
@@ -110,6 +114,7 @@ public:
 						if(i+1<HW->num_of_processor)
 							fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i + 1, 'W');
 						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l - 1, i, 'L');
+						//fprintf(fp, " + X(%d,%d,%d)", src_id, l - 1, i);
 						fprintf(fp, " >= 0\n");
 
 						fprintf(fp, " - 10 X(%d,%d,%d)", src_id, l, i); // operation binding to time l and processro i;
@@ -118,6 +123,7 @@ public:
 						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, i, 'S');
 						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, i, 'E');
 						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l + 1, i, 'L');
+						//fprintf(fp, " + X(%d,%d,%d)", dst_id, l + 1, i);
 						fprintf(fp, " <= 0\n");
 				}
 			}
@@ -216,6 +222,32 @@ public:
 					}
 				}
 			}
+
+			/*//computing/routing constaint
+			for (int l = 1; l < L;l++) {
+				for (int i = 0; i < HW->num_of_processor; i++) {
+					bool firstline = true;
+					for (auto p = DFG->Vertices.begin(); p != DFG->Vertices.end(); p++) {
+						int operation = p->second.get_ID();
+						if (firstline) {
+							fprintf(fp, " 5 X(%d,%d,%d)", operation, l, i); // operation binding to time l and processro i;
+							firstline = false;
+						}
+						else
+							fprintf(fp, " + 5 X(%d,%d,%d)", operation, l, i); // operation binding to time l and processro i;
+					}
+					int edge_id = 0;
+					for (auto p = DFG->Edges.begin(); p != DFG->Edges.end(); p++, edge_id++) {
+						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l, i, 'N');
+						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l, i, 'W');
+						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l, i, 'S');
+						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l, i, 'E');
+						fprintf(fp, " + D(%d,%d,%d,%c)", edge_id, l, i, 'L');
+					}
+					fprintf(fp, " <= 5\n");
+				}
+			}*/
+
 		}
 //////////TODO///////////////////////////////
 		//data exist constraint
@@ -293,14 +325,15 @@ public:
 				}
 			}
 		}
-
-		for (int i = 0; i < HW->num_of_processor; i++) {
-			for (int edge_id = 0; edge_id < DFG->Edges.size(); edge_id++) {
-					fprintf(fp, "  D(%d,%d,%d,%c) = 0\n", edge_id, 0, i, 'N');
-					fprintf(fp, "  D(%d,%d,%d,%c) = 0\n", edge_id, 0, i, 'W');
-					fprintf(fp, "  D(%d,%d,%d,%c) = 0\n", edge_id, 0, i, 'S');
-					fprintf(fp, "  D(%d,%d,%d,%c) = 0\n", edge_id, 0, i, 'E');
-					fprintf(fp, "  D(%d,%d,%d,%c) = 0\n", edge_id, 0, i, 'L');
+		for (int l = 0; l < 2; l++) {
+			for (int i = 0; i < HW->num_of_processor; i++) {
+				for (int edge_id = 0; edge_id < DFG->Edges.size(); edge_id++) {
+					fprintf(fp, "  D(%d,%d,%d,%c) = 0\n", edge_id, l, i, 'N');
+					fprintf(fp, "  D(%d,%d,%d,%c) = 0\n", edge_id, l, i, 'W');
+					fprintf(fp, "  D(%d,%d,%d,%c) = 0\n", edge_id, l, i, 'S');
+					fprintf(fp, "  D(%d,%d,%d,%c) = 0\n", edge_id, l, i, 'E');
+					fprintf(fp, "  D(%d,%d,%d,%c) = 0\n", edge_id, l, i, 'L');
+				}
 			}
 		}
 

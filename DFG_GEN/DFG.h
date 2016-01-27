@@ -201,12 +201,12 @@ private:
 public:
 	std::map <int, DFG_vertex> Vertices;
 	std::vector<DFG_edge> Edges;
+	std::map <DFG_vertex*, int> Datamap;
 	InstructionLatency	InstructionModel;
-	int edge_id;
-
+	int data_id;
 	DataFlowGraph() {
 		Vertices.clear();
-		edge_id = 0;
+		data_id = 0;
 	}
 	void add_vertex(int id, char *name, int inst_type) {
 		DFG_vertex temp(name, inst_type, id);
@@ -234,7 +234,7 @@ public:
 			if (p != NULL && c != NULL) {
 				p->add_children(child_id, distance);
 				c->add_parents(parent_id, distance);
-				Edges.push_back(DFG_edge(p, c, edge_id++));
+				Edges.push_back(DFG_edge(p, c, data_id++));
 			}
 		}
 		return;
@@ -246,7 +246,7 @@ public:
 		if (p != NULL && c != NULL) {
 			p->add_children(child_id, 0);
 			c->add_parents(parent_id, 0);
-			Edges.push_back(DFG_edge(p, c, edge_id++));
+			Edges.push_back(DFG_edge(p, c, data_id++));
 		}
 		return;
 	}
