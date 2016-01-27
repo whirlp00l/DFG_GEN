@@ -234,7 +234,9 @@ public:
 			if (p != NULL && c != NULL) {
 				p->add_children(child_id, distance);
 				c->add_parents(parent_id, distance);
-				Edges.push_back(DFG_edge(p, c, data_id++));
+				if (Datamap.find(p) == Datamap.end())
+					Datamap[p] = data_id++;
+				Edges.push_back(DFG_edge(p, c, Datamap[p]));
 			}
 		}
 		return;
@@ -246,7 +248,9 @@ public:
 		if (p != NULL && c != NULL) {
 			p->add_children(child_id, 0);
 			c->add_parents(parent_id, 0);
-			Edges.push_back(DFG_edge(p, c, data_id++));
+			if (Datamap.find(p) == Datamap.end())
+				Datamap[p] = data_id++;
+			Edges.push_back(DFG_edge(p, c, Datamap[p]));
 		}
 		return;
 	}

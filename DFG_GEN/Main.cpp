@@ -16,12 +16,12 @@ int main() {
 		DFG.add_vertex(3, "n3", ADD);
 		DFG.add_vertex(4, "n4", MULT);
 		DFG.add_vertex(5, "n5", ADD);
-		DFG.add_vertex(6, "n6", MULT);
+		//DFG.add_vertex(6, "n6", MULT);
 		DFG.draw_edge(1, 2);
 		DFG.draw_edge(1, 3);
 		DFG.draw_edge(1, 4);
 		DFG.draw_edge(1, 5);
-		DFG.draw_edge(5, 6);
+		//DFG.draw_edge(5, 6);
 	}
 	else if(mode == "iir") {
 		DFG.add_vertex(0, "LOAD", LOAD);
@@ -119,9 +119,10 @@ int main() {
 	DFG.OutputPNG((mode+".png").c_str());
 	DFG.OutputStatement((mode + ".txt").c_str());
 
-	HardwareResource HW(3, 3);
+	HardwareResource HW(2, 2);
 	Scheduler ILP(&DFG, &HW);
 	ILP.calc_L();
-	ILP.PrintLPFile();
+	//ILP.set_L(8);
+	ILP.PrintLPFile(mode);
 	return 0;
 }
